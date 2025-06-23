@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteApp - Share Your Notes Seamlessly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- General & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevents horizontal scroll from animations */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #4A00E0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            font-weight: 600;
+        }
+
+        .login-btn {
+            background-color: #e9eef2;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .login-btn:hover {
+            background-color: #dde3e8;
+            color: #333;
+        }
+
+
+        /* --- Hero Section --- */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #8E2DE2, #4A00E0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            color: #555;
+        }
+
+        .cta-button {
+            background: linear-gradient(90deg, #8E2DE2, #4A00E0);
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(74, 0, 224, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(142, 45, 226, 0.3);
+        }
+
+        /* --- Hero Illustration --- */
+        .hero-illustration {
+            position: relative;
+            margin-top: 5rem;
+            width: 100%;
+            height: 350px; /* Space for illustration and floating shapes */
+        }
+
+        .mockup-card {
+            width: 450px;
+            height: 280px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .mockup-header {
+            display: flex;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+        }
+
+        .mockup-content {
+            padding-top: 1.5rem;
+        }
+
+        .mockup-title-bar {
+            width: 40%;
+            height: 20px;
+            background: linear-gradient(90deg, #d3b3f2, #b592e8);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .mockup-text-line {
+            width: 90%;
+            height: 10px;
+            background-color: #e9eef2;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        .mockup-text-line.short {
+            width: 60%;
+        }
+
+        /* --- Floating Shapes & Animations --- */
+        .floating-shape {
+            position: absolute;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+            opacity: 0.15;
+        }
+
+        .shape1 {
+            width: 150px;
+            height: 150px;
+            top: 0;
+            left: 15%;
+            transform: rotate(45deg);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape2 {
+            width: 80px;
+            height: 80px;
+            bottom: 20px;
+            right: 10%;
+            transform: rotate(25deg);
+            animation: float 10s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        .shape3 {
+            width: 50px;
+            height: 50px;
+            top: 30%;
+            right: 20%;
+            transform: rotate(15deg);
+            animation: float 6s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(var(--initial-rotate, 45deg)); }
+            50% { transform: translateY(-20px) rotate(calc(var(--initial-rotate, 45deg) + 10deg)); }
+            100% { transform: translateY(0px) rotate(var(--initial-rotate, 45deg)); }
+        }
+
+        /* Add initial rotation values for keyframes */
+        .shape1 { --initial-rotate: 45deg; }
+        .shape2 { --initial-rotate: 25deg; }
+        .shape3 { --initial-rotate: 15deg; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            nav ul {
+                display: none; /* Simple hiding for mobile example */
+            }
+            .mockup-card {
+                width: 90%;
+                height: auto;
+            }
+            .shape1 { left: 5%; }
+            .shape2 { right: 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">NoteApp</div>
+            <nav>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#" class="login-btn">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <h1>Your Notes, Seamlessly Synced & Shared.</h1>
+            <p>Capture your thoughts, organize your ideas, and collaborate with anyone, anywhere. NoteApp is the simplest way to keep your notes in one place.</p>
+            <a href="#" class="cta-button">Get Started for Free</a>
+
+            <div class="hero-illustration">
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <div class="mockup-dot"></div>
+                        <div class="mockup-dot"></div>
+                        <div class="mockup-dot"></div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-title-bar"></div>
+                        <div class="mockup-text-line"></div>
+                        <div class="mockup-text-line short"></div>
+                        <div class="mockup-text-line"></div>
+                        <div class="mockup-text-line"></div>
+                        <div class="mockup-text-line short"></div>
+                    </div>
+                </div>
+                <div class="floating-shape shape1"></div>
+                <div class="floating-shape shape2"></div>
+                <div class="floating-shape shape3"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // A simple script for potential future interactions.
+        // For now, the design is mostly CSS-driven.
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Welcome to the new NoteApp design!");
+
+            // Example: Add a subtle fade-in effect to the hero content on load
+            const heroContent = document.querySelector('.hero');
+            heroContent.style.opacity = 0;
+            heroContent.style.transition = 'opacity 0.8s ease-in-out';
+            
+            setTimeout(() => {
+                heroContent.style.opacity = 1;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
