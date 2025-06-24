@@ -45,9 +45,9 @@ To learn more about adding login providers to your Strapi application, feel free
 4. Click **Register application** and you will be redirected to the OAuth application settings page.
 5. Click **Generate a new client secret** and copy it. Copy the **Client ID** as well.
 
-<!--Add screenshot of settings-->
-<!-- Client ID: Ov23liOtqTI9d0mHYCZ1 -->
-<!-- Client Secret: b0814556ede5bd8a9f7dde23ff5e9d6d77d74587 -->
+<!-- Add screenshot of settings-->
+<!-- I: Ov23liOtqTI9d0mHYCZ1 -->
+<!-- S: b0814556ede5bd8a9f7dde23ff5e9d6d77d74587 -->
 
 ![GitHub OAuth Settings](https://res.cloudinary.com/craigsims808/image/upload/v1750258727/strapi/sasn/github-oauth-settings-live_abbowv.png)
 
@@ -91,8 +91,8 @@ To learn more about adding login providers to your Strapi application, feel free
 11. Add the **Valid OAuth Redirect URI**, which is `http://localhost:1337/api/connect/facebook/callback` and select **Save changes**.
 12. Copy your **App ID** and **App secret** by visiting **Basic** under **App settings**
 
-<!--App ID 759961263122964 -->
-<!--App Secret ad69c02c65684438ec76188def0cb613 -->
+<!--I 759961263122964 -->
+<!--S ad69c02c65684438ec76188def0cb613 -->
 
 ![Facebook OAuth Settings](https://res.cloudinary.com/craigsims808/image/upload/v1750354011/strapi/sasn/facebook-oauth-settings_byz3cd.png)
 

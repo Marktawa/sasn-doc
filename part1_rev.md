@@ -195,6 +195,22 @@ Once all questions are answered, it will install all the dependencies. The next 
 cd frontend
 ```
 
+<!--
+Update `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  compatibilityDate: '2025-05-15',
+  devtools: { enabled: true },
+    vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
+})
+```
+-->
+
 ```shell
 npm run dev
 ```
@@ -224,6 +240,26 @@ export default defineNuxtConfig({
 });
 ```
 
+<!--
+Update `nuxt.config.ts`:
+
+```ts
+import tailwindcss from "@tailwindcss/vite";
+export default defineNuxtConfig({
+  compatibilityDate: '2025-05-15',
+  devtools: { enabled: true },
+    vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+    server: {
+      allowedHosts: true,
+    },
+  },
+})
+```
+-->
+
 Create an `./assets/css/main.css` file and add an `@import` that imports Tailwind CSS.
 ```css
 @import "tailwindcss";
@@ -244,6 +280,27 @@ export default defineNuxtConfig({
   },
 });
 ```
+
+<!--
+Update `nuxt.config.ts`:
+
+```ts
+import tailwindcss from "@tailwindcss/vite";
+export default defineNuxtConfig({
+  compatibilityDate: '2025-05-15',
+  devtools: { enabled: true },
+  css: ['~/assets/css/main.css'],
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+    server: {
+      allowedHosts: true,
+    },
+  },
+})
+```
+-->
 
 ## Conclusion
 
