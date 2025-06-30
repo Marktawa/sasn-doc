@@ -12,12 +12,7 @@ What’ll you need for this tutorial:
 
 *   Basic knowledge of [Vue.js](https://vuejs.org/)
 *   Knowledge of JavaScript
-*   [Node.js](https://nodejs.org/en/) (v14 recommended for Strapi)
-*   [MongoDB](https://www.mongodb.com/)
-
-Here’s what the final version of our application looks like
-
-The [GitHub repository for the front-end application](https://github.com/oviecodes/nuxt-strapi-notesapp). The [repo for the back-end application](https://github.com/oviecodes/strapi_notesapp).
+*   [Node.js](https://nodejs.org/en/)
 
 ## Table of contents
 
@@ -33,8 +28,6 @@ We need a way for our application users to create and edit notes, that’s why w
 Execute the following lines of code
 
 ```
-yarn add vue-quill-editor //using yarn
-
 npm install vue-quill-editor //using npm
 ```
 
@@ -106,16 +99,6 @@ Open up the file and fill it up with the lines of code below.
           </button>
         </div>
       </div>
-      <!-- <div>
-        <input
-          v-model="title"
-          class="p-5 font-bold text-4xl w-4/5 border-3 border-black-500"
-          type="text"
-          :readonly="!isAuthor"
-          @change="update()"
-        />
-        <span> <font-awesome-icon :icon="['fas', 'pen-alt']" /> </span>
-      </div> -->
       <div id="toolbar"></div>
       <div
         ref="quill-editor"
@@ -500,10 +483,6 @@ Open up the `note.js` file and fill it up as follows.
 
 ```js
 'use strict';
-/**
- * Read the documentation (https://strapi.io/documentation/developer-docs/latest/concepts/services.html#core-services)
- * to customize this service
- */
 
 const Email = require('email-templates');
 const email = new Email({
@@ -595,10 +574,7 @@ Open up the `note.js` file and fill it up with the following code
 
 ```js
 'use strict';
-/**
- * Read the documentation (https://strapi.io/documentation/developer-docs/latest/concepts/controllers.html#core-controllers)
- * to customize this controller
- */
+
 module.exports = {
     async addEditors(ctx) {
         const { editorEmail, noteAuthor } = ctx.request.body;
@@ -1069,37 +1045,6 @@ heroku buildpacks:set heroku/nodejs
 ```
 git push heroku master
 ```
-
-## Grant’s Error
-
-We have our application hosted, however if you try to log into the application using any of the social providers you get the following error:
-
-`http://localhost:1337/?error=Grant%3A%20missing%20session%20or%20misconfigured%20provider#_=_`
-
-Let’s see what causes this and how we can resolve it.
-
-From the Strapi documentation, it is stated that:
-
-*   **Grant: missing session or misconfigured provider**: It may be due to many things.
-    *   **The redirect url can't be built**: Make sure you have set the backend url in `config/server.js`: [Setting up the server url](https://strapi.io/documentation/developer-docs/latest/development/plugins/users-permissions.html#setting-up-the-server-url)
-    *   **A session/cookie/cache problem**: You can try again in a private tab.
-    *   **The incorrect use of a domain with ngrok**: Check your urls and make sure that you use the ngrok url instead of `http://localhost:1337`. Don't forget to check the backend url set in the example app at `src/config.js`.
-
-## How to solve Grant’s Error
-
-Now we know what causes Grant’s Error, let’s see how we can solve it. Luckily for us, solving this error does not require much effort, kudos to Strapi for making things easy.
-
-*   Open up your `config/server.js` file then add the following line of code
-
-```js
-module.exports = ({ env }) => ({
-    ...,
-    url: env('', 'https://your-strapi-url.herokuapp.com/'),
-    ...
-});
-```
-
-Replace the localhost URL with that of your hosted Strapi application and voila, your application begins to work as normal.
 
 ## Conclusion
 

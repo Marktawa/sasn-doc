@@ -176,14 +176,10 @@ html {
 
 ```vue
 <template>
-    <div
-    class="min-h-screen flex justify-center items-center text-center mx-auto sm:pl-24 bg-yellow-200"
-    >
+    <div class="min-h-screen flex justify-center items-center text-center mx-auto sm:pl-24 bg-yellow-200">
     <div class="w-1/2 sm:text-left sm:m-5">
         <div>
-        <h1
-            class="text-3xl sm:text-6xl font-black sm:pr-10 leading-tight text-blue-900"
-        >
+        <h1 class="text-3xl sm:text-6xl font-black sm:pr-10 leading-tight text-blue-900">
             Welcome to the NoteApp
         </h1>
         <p class="sm:block hidden my-5">
@@ -415,7 +411,7 @@ Open up the `_id.vue` file and fill it up with the following code
 ```vue
 <template>
   <div>
-    <Nav/>
+    <Nav />
     <div class="sm:w-2/3 w-4/5 mt-10 mx-auto">
       <button class="button--blue" @click="createNewNote">Create Note</button>
       <h1 class="my-5 text-2xl font-black">Your Notes</h1>

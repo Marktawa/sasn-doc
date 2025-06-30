@@ -13,17 +13,7 @@ What you will need for this tutorial:
 
 ## What you will build
 
-Here's what the final version of our Application looks like:
-
-[Application preview](https://api-prod.strapi.io/uploads/Application_preview_d0be607826.png)
-
-![Application preview](https://api-prod.strapi.io/uploads/Application_preview_d0be607826.png)
-
 You can find the source code for the application using this [GitHub Repository Link](https://github.com/Marktawa/social-auth-strapi-nuxt)
-
-<!--
-You can find the GitHub repository for the [frontend application](https://github.com/oviecodes/nuxt-strapi-notesapp) and the repository for the [backend application](https://github.com/oviecodes/strapi_notesapp).
--->
 
 Let's get started with our Strapi Backend setup.
 
@@ -40,8 +30,7 @@ The [documentation](https://docs.strapi.io/cms/installation/cli) walks you throu
 The Quickstart project uses SQLite as the default database.
 
 ```bash
-yarn create strapi-app backend # using yarn
-npx create-strapi-app backend  # using npx
+npx create-strapi-app backend
 ```
  
 Your package manager will create a directory with the name `backend` and will install Strapi.
@@ -50,8 +39,7 @@ If you have followed the instructions correctly, you should have Strapi installe
 
 ```bash
 cd backend
-yarn develop # using yarn
-npm run develop # using npm
+npm run develop
 ```
 
 To start our development server, Strapi starts our app on `http://localhost:1337/admin`
@@ -170,7 +158,6 @@ To install Nuxt.js, visit [the Nuxt.js docs](https://nuxt.com/docs/getting-start
 npm create nuxt frontend
 ```
 
-
 Answer the prompts as follows:
 
 ```
@@ -188,22 +175,6 @@ Once all questions are answered, it will install all the dependencies. The next 
 cd frontend
 ```
 
-<!--
-Update `nuxt.config.ts`:
-
-```ts
-export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
-  devtools: { enabled: true },
-    vite: {
-    server: {
-      allowedHosts: true,
-    },
-  },
-})
-```
--->
-
 ```shell
 npm run dev
 ```
@@ -211,8 +182,6 @@ npm run dev
 We should have the Nuxt.js Application running on [`http://localhost:3000`](http://localhost:3000).
 
 ![Nuxt Default Frontend](https://res.cloudinary.com/craigsims808/image/upload/v1750255505/strapi/sasn/nuxt-default-frontend_tqoblo.png)
-
-Add your newly-created `./assets/css/main.css` to the `css` array in your `nuxt.config.ts` file.
 
 ## Conclusion
 
