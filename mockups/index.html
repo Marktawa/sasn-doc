@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Share Note</title>
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 2rem;
+    background: #f9f9f9;
+  }
+  .note {
+    padding: 1rem;
+    background: white;
+    border: 1px solid #ccc;
+    max-width: 600px;
+    margin-bottom: 2rem;
+  }
+  .modal {
+    padding: 1rem;
+    background: white;
+    border: 1px solid #ccc;
+    max-width: 400px;
+  }
+  input, textarea, button {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Note preview -->
+<div class="note">
+  <h2>Meeting Notes – 12th Aug</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur viverra...</p>
+  <button onclick="document.getElementById('share-modal').style.display='block'">
+    Share
+  </button>
+</div>
+
+<!-- Share Modal -->
+<div id="share-modal" class="modal" style="display:none;">
+  <h3>Share this note</h3>
+  
+  <label for="emails">Recipient Emails (comma separated)</label>
+  <input type="text" id="emails" placeholder="example@mail.com, friend@mail.com">
+
+  <label for="message">Optional Message</label>
+  <textarea id="message" placeholder="Add a personal note..."></textarea>
+
+  <button>Send via Email</button>
+  <button onclick="copyLink()">Copy Link</button>
+  
+  <p id="status" style="color:green;"></p>
+</div>
+
+<script>
+  function copyLink() {
+    const link = "https://app.example.com/notes/preview/123";
+    navigator.clipboard.writeText(link).then(() => {
+      document.getElementById('status').textContent = "Link copied!";
+    });
+  }
+</script>
+
+</body>
+</html>
