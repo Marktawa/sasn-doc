@@ -308,7 +308,7 @@ cd pages
 
 Open up the `notes/_id.vue` and add the following lines to your methods object.
 
-```vue
+```js
 async doUpload() {
   const file = this.$refs.formInput
   const formdata = new FormData(file) // Create a form object
@@ -637,7 +637,7 @@ Now, our Strapi application supports email-sharing, next we’ll integrate the e
 
 Open up your `notes/_id.vue` file and add the following lines of code to your methods object
 
-```vue
+```js
 async addNewEditor(e) {
       e.preventDefault()
       try {
