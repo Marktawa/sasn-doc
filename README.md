@@ -374,3 +374,55 @@ npm run dev
 
 Visit `http://localhost:3000/notes` to view your Notes list page. 
 ![Notes List page](https://res.cloudinary.com/craigsims808/image/upload/v1758655681/strapi/sasn/notes-list-page_zlv1bv.png)
+
+### Create Individual Note page
+
+Inside the `pages/notes` directory, create a new file named `[id].vue`:
+
+```shell
+touch pages/notes/[id].vue
+```
+
+Add the following code to `pages/notes/[id].vue`:
+```vue
+<script setup>
+  const route = useRoute()
+  const { data: note } = await useFetch(`http://localhost:1337/api/notes/${route.params.id}`)
+</script>
+
+<template>
+  <h1>{{ note.data.title }}</h1>
+  <p>{{ note.data.content }}</p>
+  <NuxtLink to="/notes">Back to Notes List</NuxtLink>
+</template>
+```
+
+Update `pages/notes/index.vue` to add links to individual notes:
+```vue
+<script setup>
+  const { data: notes } = await useFetch(`http://localhost:1337/api/notes`)
+</script>
+
+<template>
+  <h1>Notes App</h1>
+  <h2>Notes List</h2>
+  <ul>
+    <li v-for="note in notes.data">
+      <NuxtLink :to="`/notes/${note.documentId}`">{{ note.title}}</NuxtLink>
+      <NuxtLink :to="`/notes/${note.documentId}`">
+        <button>View Note</button>
+      </NuxtLink>
+    </li>
+  </ul>
+</template>
+```
+
+Visit `http://localhost:3000/notes` and click on any note to view the individual note page.
+
+Here is a screenshot of the updated Notes List page:
+
+![Updated Notes List page](https://res.cloudinary.com/craigsims808/image/upload/v1759952034/strapi/sasn/updated-notes-list-page_onx91p.png)
+
+Here is a screenshot of an Individual Note page
+
+![Individual Note page](https://res.cloudinary.com/craigsims808/image/upload/v1759952151/strapi/sasn/individual-note-page_lt2uil.png)
