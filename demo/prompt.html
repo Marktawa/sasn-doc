@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .slide-in {
+            opacity: 0;
+            transform: translateX(60%);
+            animation: slideIn 1.5s cubic-bezier(.68, -0.55, .27, 1.55) forwards;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        a {
+            display: inline-block;
+        }
+        a:hover {
+            transform: scale(1.5) !;
+        }
+    </style>
+</head>
+<body>
+    <a class="slide-in" href="/">Hello</a>
+</body>
+</html>
