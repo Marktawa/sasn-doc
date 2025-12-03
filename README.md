@@ -3,20 +3,36 @@
 ## Introduction
 
 - Description of article
+This article is about building a Note sharing app with social authentication using Nuxt and Strapi. It will start with building the app as a Notes app (Note-taking app) with no authentication. Afterwards, the Notes app will have authentication included, that is, Social Auth (GitHub and Facebook). After including social auth, the last phase will make the app be able to share notes to other authenticated users.
+
 - Feature overview/list
+Here is a list of the features which will be included in the app:
+* Create a note
+* Read a note
+* Update a note
+* Delete a note
+
+* Create a user account for your notes
+* Log in and Log out of your app
+
+* Preview of notes
+* Sharing via email the notes to other users
+* Requesting edit access to a note by another user
+* Add editors/collaborators to your notes (update your note)
+
 - Demo video
 - Links to demo video, GitHub repo, live link
 
 ## Prerequisites
 
 - Knowledge of Strapi (Link to Quickstart), (Link to What is Strapi)
-- Knowledge of HTML, CSS, JavaScript
-- Node
-- GitHub
-- Facebook
+- Knowledge of HTML, CSS, JavaScript, Nuxt and Vue.js
+- Node.js installed on your machine (latest LTS version)
+- GitHub account
+- Facebook account
 - Google?
-- Strapi Cloud
-- Brevo
+- Strapi Cloud account
+- Brevo account
 
 ## Steps to be taken?
 
@@ -50,6 +66,8 @@ npm run develop
 ```
 
 Open browser and visit the admin page at `http://localhost:1337/admin`. Login and view your dashboard.
+
+The details to login to the admin are `chef@strapi.io` for the admin and `Gourmet1234` for the password.
 
 ![Strapi Admin Dashboard](https://res.cloudinary.com/craigsims808/image/upload/v1750250272/strapi/sasn/basic-strapi-overview_fhjixd.png)
 
@@ -177,7 +195,7 @@ curl -X POST http://localhost:1337/api/notes \
 -H "Content-Type: application/json" \
 -d '{
        "data": {
-           "title": "Created Note Title",
+           "title": "6 Created Note Title",
            "content": "This is the content of the created note"
           }
       }'         
@@ -202,7 +220,7 @@ curl -X POST http://localhost:1337/api/notes \
 - Test`delete`, 
 - Curl (Use `documentId`)
 ```shell
-curl -X DELETE http://localhost:1337/api/notes/awoi8cgp18fi1xuz7qw3va7b
+curl -X DELETE http://localhost:1337/api/notes/q3ltflda3l8j9xuuejytfofj
 ```
 
 - Result will be a `204` HTTP code from the Strapi server. (No JSON)
@@ -211,11 +229,11 @@ curl -X DELETE http://localhost:1337/api/notes/awoi8cgp18fi1xuz7qw3va7b
 
 - Test `update`
 ```shell
-curl -X PUT http://localhost:1337/api/notes/sa0dnznt6xr78qprs07dkds3 \
+curl -X PUT http://localhost:1337/api/notes/ia21j5a0o6muvwf0nvegce7d \
 -H "Content-Type: application/json" \
 -d '{
       "data": {
-         "title": "Updated Note title"
+         "content": "This is content for the first note. It has been updated once."
         }
      }'
 ```
@@ -373,7 +391,7 @@ npm run dev
 ```
 
 Visit `http://localhost:3000/notes` to view your Notes list page. 
-![Notes List page](https://res.cloudinary.com/craigsims808/image/upload/v1758655681/strapi/sasn/notes-list-page_zlv1bv.png)
+![Notes List page](https://res.cloudinary.com/craigsims808/image/upload/v1758655681/strapi/sasn/notes-list-page_zlv1bv.png) <!--Update screenshot-->
 
 ### Create Individual Note page
 
