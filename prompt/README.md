@@ -1,3 +1,11 @@
+## 7
+
+I am now working on the "Update Note Flow". I need help with updating `pages/notes/[id].vue`
+
+## 6
+
+For the given code, please check out the 'Create "Create Note page"' section then outline to me what considerations have to be made in order to produce the `pages/notes/create.vue` file.
+
 ## 5
 
 Revise the code:
