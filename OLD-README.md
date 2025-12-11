@@ -1755,7 +1755,7 @@ What this does:
 Run your development servers and visit `http://localhost:3000`. Click "Login with GitHub" and verify you're redirected to GitHub's authorization page.
 <!-- Add Screenshot -->
 
-### Handle OAuth Callback and Store JWT Token (Server-Side)
+### Handle OAuth Callback and Store JWT (Server-Side)
 
 After the user authorizes your app on GitHub, Strapi redirects them back to your application with an `access_token`. We need to exchange this token for a Strapi JWT and user profile, then store the JWT in a secure HTTP-only cookie.
 
