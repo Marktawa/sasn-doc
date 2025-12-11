@@ -51,6 +51,7 @@
 - App Brevo api to Strapi
 - install brevo sdk
 - add brevo helper function
+
 - create routes and controller to share link, unshare and preview
 - Update Note collection with `isShared` field boolean
 - Update permissions for preview page
