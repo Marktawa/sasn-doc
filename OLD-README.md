@@ -2735,7 +2735,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
     },
 
     async update(ctx) {
-        const user = ctx.state.user;;
+        const user = ctx.state.user;
         const { id } = ctx.params;
         const { title, content } = ctx.request.body.data || ctx.request.body;
 

@@ -1205,7 +1205,7 @@ USER added off screen
 Visit the Content Manager in your Strapi Dashboard. Assign some notes to the newly created user you just added.
 <!-- Add Screenshot -->
 
-## Test `find`, `findOne`, `create`, `update`, and `delete` for Authenticated Users
+## Test `find`for Authenticated Users
 
 If we tested the `find` method right now using one of the authenticated users, we will discover that the response will include all notes in the database. Even the ones that don't belong to the authenticated user. That is undesirable.
 
@@ -1596,6 +1596,7 @@ export default defineEventHandler(async (event) => {
 6. Click "View Created Note" to see your new note
 7. The note should be automatically associated with your user account
 <!-- Add Screenshot -->
+8. Visit the Notes list page to confirm the note appears.
 
 ### Update Edit Note Flow for Authenticated Requests
 
@@ -1844,11 +1845,11 @@ Update `pages/notes/[id].vue` to include user information and logout:
 
 #### How the Logout Flow Works
 
-1. **User clicks "Logout"** button
-2. **Browser navigates to `/api/auth/logout`** (our Nuxt server route)
-3. **Server route deletes the `auth_token` cookie**
-4. **Server redirects user** to the home page (`/`)
-5. **User is now logged out** and must login again to access notes
+1. User clicks "Logout" button
+2. Browser navigates to `/api/auth/logout` (our Nuxt server route)
+3. Server route deletes the `auth_token` cookie
+4. Server redirects user to the home page (`/`)
+5. User is now logged out and must login again to access notes
 
 #### Test Logout Functionality
 
@@ -1863,4 +1864,20 @@ Update `pages/notes/[id].vue` to include user information and logout:
 5. Try visiting `http://localhost:3000/notes` directly - you should see an error or empty data since you're no longer authenticated
 <!-- Add Screenshot -->
 
-6. Click "Login with GitHub" to login again
+6. Click "Login with GitHub" to login again.
+
+## Add Sharing: Phase 1
+
+We will now implement the sharing functionality for this app. The app in its current state already has the ability to share notes. All the owner of a note has to do to share a note is simply send the link manually to another user. In other words, any authenticated user with a link to the note can view, edit or delete a note right in the frontend User Interface of the app.
+
+To prove this we can grab the link to the note of one user and try to open it logged in as another user in the browser.
+
+Make sure your Strapi server and Nuxt development server are running.
+
+In one browser instance log in to the Notes app as one user. Visit one of the notes in the list and copy the URL to the note in the address bar.
+
+Open another browser instance (one which doesn't use the login credentials of the first user) then log in to the Notes app as the second user. Once logged in, paste the URL of the note link you copied earlier. You should be able to view the note as predicted.
+<!-- Add screenshot -->
+
+Try editing the note as well. You should see your changes reflected, even though you don't own the note.
+<!-- Add screenshot -->

@@ -1,3 +1,408 @@
+## PROMPT
+
+I have a Strapi collection called "Notes". It has a field called `isShared` which is a boolean with a default value of `false`. When set to `true` using the `share` route and `share` method in the controller, any authenticated user can view a note owned by another user. When set to `false` using the `unshare` route and the `unshare` method in the Notes controller, only the owner retains access to the note. I want to add another field called `canEdit` or any other suitable name. This field will also be a boolean with a default value of `false`. when set to `true` using a route (Later to be named) and a method (Later to be named) in the Notes controller, any authenticated user can update a note. With the reverse setup also done.
+
+What should I be naming the field, routes and controller methods? Should I combine the isShared field and canEdit field into one? What are your thoughts?
+
+## CLAUDE
+
+### Add Unshare Functionality
+
+Now that users can share notes, we need to provide a way to revoke sharing and make notes private again. This will set `isShared` back to `false`.
+
+#### Create Unshare Route
+
+Open the `src/api/note/routes/note.js` file and add a new route for unsharing notes:
+```js
+'use strict';
+
+module.exports = {
+    routes: [
+        {
+            method: 'POST',
+            path: '/notes/:id/share',
+            handler: 'note.share',
+            config: {
+                policies: [],
+                middlewares:[],
+            }
+        },
+        {
+            method: 'POST',
+            path: '/notes/:id/unshare',
+            handler: 'note.unshare',
+            config: {
+                policies: [],
+                middlewares:[],
+            }
+        }
+    ]
+}
+```
+
+#### Implement Unshare Controller Method
+
+Open the `src/api/note/controllers/note.js` file and add the `unshare` method:
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({ 
+  async find(ctx) {
+    const user = ctx.state.user;
+
+    return await strapi.documents('api::note.note').findMany({
+      filters: { user: user.id },
+    });
+  },
+
+  async findOne(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Fetch the note
+    const note = await strapi.documents('api::note.note').findOne({
+      documentId: id
+    });
+
+    // Allow access if:
+    // 1. User is the owner, OR
+    // 2. Note is shared (isShared: true)
+    if (note.user.id === user.id || note.isShared === true) {
+      return note;
+    }
+
+    // If neither condition is met, return forbidden
+    ctx.throw(403, 'You do not have permission to view this note');
+  },
+
+  async share(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Update the note to mark it as shared
+    const updatedNote = await strapi.documents('api::note.note').update({
+      documentId: id,
+      data: {
+        isShared: true
+      }
+    });
+
+    return updatedNote;
+  },
+
+  async unshare(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Update the note to mark it as private
+    const updatedNote = await strapi.documents('api::note.note').update({
+      documentId: id,
+      data: {
+        isShared: false
+      }
+    });
+
+    return updatedNote;
+  }
+}));
+```
+
+This `unshare` method does the following:
+1. Extracts the note `id` from the URL parameters
+2. Gets the authenticated user from `ctx.state.user`
+3. Updates the note with the specified `documentId` to set `isShared` to `false`
+4. Returns the updated note data
+
+#### Test Unshare Functionality
+
+With your Strapi server running, test the unshare endpoint using `curl`.
+
+**Test 1: Unshare a previously shared note**
+
+First, make sure you have a shared note (from the previous tests). Then unshare it:
+```shell
+curl -X POST "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID/unshare" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+Replace `YOUR_NOTE_DOCUMENT_ID` with the `documentId` of the shared note.
+
+You should receive a response with the updated note showing `isShared: false`:
+```json
+{
+  "data": {
+    "id": 1,
+    "documentId": "abc123xyz",
+    "title": "My Private Note Again",
+    "content": "This note is no longer shared",
+    "isShared": false,
+    "createdAt": "2025-12-09T10:00:00.000Z",
+    "updatedAt": "2025-12-09T16:00:00.000Z",
+    "publishedAt": "2025-12-09T10:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+**Test 2: Verify other users can no longer access the unshared note**
+
+Try to access the note as User 2:
+```shell
+curl -X GET "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN_2" \
+  -H "Content-Type: application/json"
+```
+
+You should now receive a 403 Forbidden error since the note is no longer shared:
+```json
+{
+  "data": null,
+  "error": {
+    "status": 403,
+    "name": "ForbiddenError",
+    "message": "You do not have permission to view this note"
+  }
+}
+```
+
+**Test 3: Owner can still view their own unshared note**
+
+Verify that User 1 (the owner) can still access the note:
+```shell
+curl -X GET "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+You should receive a successful response with the note data.
+
+Verify the note was updated by checking the Notes collection in your Strapi Content Manager. The note should now have `isShared` set to `false`.
+<!-- Add Screenshot -->
+
+## CLAUDE
+
+### Implement Share Controller Method
+
+Open the `src/api/note/controllers/note.js` file and add the `share` method:
+
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({ 
+  async find(ctx) {
+    const user = ctx.state.user;
+
+    return await strapi.documents('api::note.note').findMany({
+      filters: { user: user.id },
+    });
+  },
+
+  async share(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Update the note to mark it as shared
+    const updatedNote = await strapi.documents('api::note.note').update({
+      documentId: id,
+      data: {
+        isShared: true
+      }
+    });
+
+    return updatedNote;
+  }
+}));
+```
+
+This `share` method does the following:
+* Extracts the note `id` from the URL parameters
+* Gets the authenticated user from `ctx.state.user`
+* Updates the note with the specified `documentId` to set `isShared` to `true`
+* Returns the updated note data
+
+#### Test Share Functionality
+
+With your Strapi server running, test the share endpoint using `curl`.
+
+In the terminal, run the following command:
+```shell
+curl -X POST "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID/share" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+Replace `YOUR_NOTE_DOCUMENT_ID` with the `documentId` of one of your notes.
+
+You should receive a response with the updated note showing `isShared: true`:
+
+```json
+{
+  "data": {
+    "id": 1,
+    "documentId": "abc123xyz",
+    "title": "My Shared Note",
+    "content": "This note is now shared",
+    "isShared": true,
+    "createdAt": "2025-12-09T10:00:00.000Z",
+    "updatedAt": "2025-12-09T15:30:00.000Z",
+    "publishedAt": "2025-12-09T10:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+<!-- Check in Admin as well: OPTIONAL -->
+
+### Override `findOne` Controller for Shared Notes Access
+
+Currently, only note owners can view their notes. We want to change this behavior so that:
+- Authors can always view their own notes
+- Any authenticated user can view notes marked as shared (`isShared: true`)
+- Private notes (`isShared: false`) remain visible only to the author
+
+Open the `src/api/note/controllers/note.js` file and add the `findOne` method:
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({ 
+  async find(ctx) {
+    const user = ctx.state.user;
+
+    return await strapi.documents('api::note.note').findMany({
+      filters: { user: user.id },
+    });
+  },
+
+  async findOne(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Fetch the note
+    const note = await strapi.documents('api::note.note').findOne({
+      documentId: id
+    });
+
+    // Allow access if:
+    // 1. User is the owner, OR
+    // 2. Note is shared (isShared: true)
+    if (note.user.id === user.id || note.isShared === true) {
+      return note;
+    }
+
+    // If neither condition is met, return forbidden
+    ctx.throw(403, 'You do not have permission to view this note');
+  },
+
+  async share(ctx) {
+    const { id } = ctx.params;
+    const user = ctx.state.user;
+
+    const updatedNote = await strapi.documents('api::note.note').update({
+      documentId: id,
+      data: {
+        isShared: true
+      }
+    });
+
+    return updatedNote;
+  }
+}));
+```
+
+This `findOne` method does the following:
+1. Extracts the note `id` from the URL parameters
+2. Gets the authenticated user from `ctx.state.user`
+3. Fetches the note using the `documentId`
+4. Checks if the user is the note owner OR if the note is marked as shared
+5. Returns the note if either condition is true
+6. Throws a 403 Forbidden error if neither condition is met
+
+#### Test Shared Notes Access
+
+With your Strapi server running, let's test the new sharing behavior.
+
+**Test 1: Share a note as User 1**
+
+First, share a note belonging to User 1:
+```shell
+curl -X POST "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID/share" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+Replace `YOUR_NOTE_DOCUMENT_ID` with the `documentId` of one of User 1's notes.
+
+**Test 2: View the shared note as User 2**
+
+Now, try to access that same note as User 2:
+```shell
+curl -X GET "http://localhost:1337/api/notes/YOUR_NOTE_DOCUMENT_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN_2" \
+  -H "Content-Type: application/json"
+```
+
+You should receive a successful response with the note data, even though User 2 is not the owner:
+```json
+{
+  "data": {
+    "id": 1,
+    "documentId": "abc123xyz",
+    "title": "My Shared Note",
+    "content": "This note is now shared",
+    "isShared": true,
+    "createdAt": "2025-12-09T10:00:00.000Z",
+    "updatedAt": "2025-12-09T15:30:00.000Z",
+    "publishedAt": "2025-12-09T10:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+<!-- Optional
+**Test 3: Try to view a private note as User 2**
+
+Try to access a different note from User 1 that has NOT been shared:
+```shell
+curl -X GET "http://localhost:1337/api/notes/PRIVATE_NOTE_DOCUMENT_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN_2" \
+  -H "Content-Type: application/json"
+```
+
+You should receive a 403 Forbidden error:
+```json
+{
+  "data": null,
+  "error": {
+    "status": 403,
+    "name": "ForbiddenError",
+    "message": "You do not have permission to view this note"
+  }
+}
+```
+
+**Test 4: Owner can still view their own private notes**
+
+Verify that User 1 can still access their own private (unshared) notes:
+```shell
+curl -X GET "http://localhost:1337/api/notes/PRIVATE_NOTE_DOCUMENT_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+You should receive a successful response with the note data.
+-->
+
+## PROMPT
+
+Finish off the section of the article with the title "### Implement Share Controller Method"
+
 ## CLAUDE
 
 ### Implement Remove Editor Endpoint
