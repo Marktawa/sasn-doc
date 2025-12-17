@@ -1,5 +1,259 @@
 ## PROMPT
 
+Giving your output in a markdown block I can copy, write out what "Override `findOne` method in Notes controller" would look like. Write it as if it is a continuation of the article.
+
+Some key points to note:
+
+* I have removed Phase 2 about overriding the `delete` controller. I have decided to deal with the issue later. So Phase 3 now becomes Phase 2.
+* I removed the logic which checks whether the user sharing the note is the owner or not in the `share` method of the notes controller. It is unnecessary for now.
+* The `src/api/note/controllers/note.js` now looks like this:
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({
+    async find(ctx) {
+        const user = ctx.state.user;
+
+        return await strapi.documents('api::note.note').findMany({
+            filters: { user: user.id },
+        })
+    },
+
+    async share(ctx) {
+        const { id } = ctx.params;
+
+        const sharedNote = await strapi.documents('api::note.note').update({
+            documentId: id,
+            data: {
+                isShared: true,
+            },
+        });
+
+        ctx.body = sharedNote;
+    },
+}));
+```
+
+## PROMPT
+
+Giving your output in a markdown block I can copy, write out what "Create custom route for sharing notes" would look like. Write it as if it is a continuation of the article.
+
+Some key points to note:
+* I have removed Phase 2 about overriding the `delete` controller. I have decided to deal with the issue later. So Phase 3 now becomes Phase 2.
+* I removed the logic which checks whether the user sharing the note is the owner or not in the `share` method of the notes controller. It is unnecessary for now.
+* Avoid numbering please
+
+## DISCARDED PART
+
+
+---
+
+
+### Override `share` method in Notes controller
+
+Now we need to create a custom `share` method in the Notes controller that will set a note's `isShared` field to `true`.
+
+Open the `src/api/note/controllers/note.js` file in your code editor.
+
+Add the `share` method to the controller:
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({
+    async find(ctx) {
+        const user = ctx.state.user;
+
+        return await strapi.documents('api::note.note').findMany({
+            filters: { user: user.id },
+        })
+    },
+
+    async delete(ctx) {
+        const user = ctx.state.user;
+        const { id } = ctx.params;
+
+        const note = await strapi.documents('api::note.note').findOne({
+            documentId: id,
+            filters: { user: user.id },
+            populate: ['user'],
+        });
+
+        if (!note) {
+            return ctx.notFound('Note not found or you do not have permission to delete it');
+        }
+
+        const deletedNote = await strapi.documents('api::note.note').delete({
+            documentId: id,
+        });
+
+        ctx.body = deletedNote;
+    },
+
+    async share(ctx) {
+        const user = ctx.state.user;
+        const { id } = ctx.params;
+
+        const note = await strapi.documents('api::note.note').findOne({
+            documentId: id,
+            filters: { user: user.id },
+            populate: ['user'],
+        });
+
+        if (!note) {
+            return ctx.notFound('Note not found or you do not have permission to share it');
+        }
+
+        const sharedNote = await strapi.documents('api::note.note').update({
+            documentId: id,
+            data: {
+                isShared: true,
+            },
+        });
+
+        ctx.body = sharedNote;
+    },
+}));
+```
+
+The `share` method does the following:
+- Gets the authenticated user from `ctx.state.user`
+- Extracts the note `id` from the URL parameters
+- Finds the note and verifies the authenticated user is the owner
+- If the note doesn't exist or the user isn't the owner, returns a 404 error
+- If the user is the owner, updates the note's `isShared` field to `true`
+- Returns the updated note data
+
+### Add `isShared` field to Notes collection
+
+We need to add a new field to the Notes collection to track whether a note has been shared or not.
+
+1. Make sure your Strapi server is running
+2. Open your Strapi Admin Dashboard at `http://localhost:1337/admin`
+3. Navigate to **Content-Type Builder** in the left sidebar
+4. Click on the **Note** collection type under **Collection Types**
+5. Click **Add another field**
+6. Select **Boolean** as the field type
+7. Set the field name to `isShared`
+8. Click **Advanced Settings** tab
+9. Set the **Default value** to `false`
+10. Click **Finish**
+11. Click **Save** to save the changes to the Note collection
+
+Your Strapi server will automatically restart to apply the changes.
+
+<!-- Add Screenshot -->
+
+Now every note in your database will have an `isShared` field that defaults to `false`. This field will be used to control whether a note can be viewed by users other than the owner.
+
+## PROMPT
+
+I ended up executing the "## Add Sharing: Phase 2" in my own way as seen below. Now, I want to proceed to the third phase. Based on your own judgement, please list out the headings associated with the "### Add Sharing: Phase 3" section
+
+## Add Sharing: Phase 2
+
+In this phase of implementing the sharing functionality, we want to change one setting. We don't want other users to delete a note they don't own.
+
+There is no valid rationale behind this. It is just a personal belief I have. I believe that the note owner should be the only one who can delete a note. There maybe reasons against this, but for this phase it is sufficient functionality for the app.
+
+### Override `delete` method in Notes controller
+
+To implement this we will have to override the `delete` method in the controller for the Notes collection. We will override it in such a way that a if the `id` of the user making the `delete` request isn't the owner then the request will not be processed.
+
+Open up `src/api/controllers/note.js` file in your code editor.
+
+Add the following code:
+```js
+'use strict';
+
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::note.note', ({ strapi }) => ({
+    async find(ctx) {
+        const user = ctx.state.user;
+
+        return await strapi.documents('api::note.note').findMany({
+            filters: { user: user.id },
+        })
+    },
+
+    async delete(ctx) {
+        const user = ctx.state.user;
+        const { id } = params;
+
+        const note = await strapi.documents('api::note.note').findOne({
+            documentId: id,
+            filters: { user: user.id },
+            populate: ['user'],
+        });
+
+        if (!note) {
+            return ctx.notFound('Note not found or you do not have permission to delete it');
+        }
+
+        const deletedNote = await strapi.documents('api::note.note').delete({
+            documentId: id,
+        });
+
+        ctx.body = deletedNote;
+    },
+}));
+```
+
+### Test `delete` override in shell
+
+In the earlier steps, we saved the `JWT`'s for two users. Copy the value of `JWT` for the first user saved as `GITHUB_JWT_TOKEN` inside `.secret` and perform a `find` request to list the user's notes.
+
+In your terminal run the following command:
+```shell
+curl -X GET "http://localhost:1337/api/notes" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN"
+```
+
+You should get a list of the user's notes in the response. Copy the `documentId` to one of the notes.
+
+Save the `documentId` as `NOTE_ID` inside the `.secret` file.
+```shell
+NOTE_ID=<documentId>
+```
+
+Load the `NOTE_ID` into your shell's environment variables:
+```shell
+export $(cat .secret | xargs)
+```
+
+Perform a `delete` request as the second user with `JWT` saved as `GITHUB_JWT_TOKEN_2` trying to delete a note owned by the first user:
+```shell
+curl -X DELETE "http://localhost:1337/api/notes/$NOTE_ID" \
+  -H "Authorization: Bearer $GITHUB_JWT_TOKEN_2"
+```
+
+The request should fail and the response should give a `403` HTTP Error Status code.
+
+### Test `delete` override in Nuxt UI
+
+Make sure your Strapi server and Nuxt development server are running.
+
+In one browser instance log in to the Notes app as one user. Visit one of the notes in the list and copy the URL to the note in the address bar.
+<!-- Add Screenshot -->
+
+Open another browser instance (one which doesn't use the login credentials of the first user) then log in to the Notes app as the second user. Once logged in, paste the URL of the note link you copied earlier. Try to delete the note. The operation should fail.
+<!-- Add screenshot -->
+
+## Add Sharing: Third Phase
+
+In this third phase of implementing the sharing functionality we will do a few things. Firstly, we will update the Notes collection with a new field called `isShared` of boolean type with a default value of `false`. This will be used to keep track of shared status of a note. Next, a `share` method inside the Notes controller will be created which sets a given note's `isShared` field to `true`. A `share` route will be created to trigger the share workflow. Then the `findOne` controller would need to be overridden so that only note owners can view the notes they own unless the note's `isShared` field is set to `true`. In the frontend side, we will update the UI with a "Share" button in the Note view page. When the owner clicks this button then a call to the `share` endpoint is made making the note become shared.
+
+
+## PROMPT
+
+For the attached file, finish off the section with the title "### Test `delete` override". Just that section alone. You must give your output in markdown as if you are continuing the article.
+
+## PROMPT
+
 I have a Strapi collection called "Notes". It has a field called `isShared` which is a boolean with a default value of `false`. When set to `true` using the `share` route and `share` method in the controller, any authenticated user can view a note owned by another user. When set to `false` using the `unshare` route and the `unshare` method in the Notes controller, only the owner retains access to the note. I want to add another field called `canEdit` or any other suitable name. This field will also be a boolean with a default value of `false`. when set to `true` using a route (Later to be named) and a method (Later to be named) in the Notes controller, any authenticated user can update a note. With the reverse setup also done.
 
 What should I be naming the field, routes and controller methods? Should I combine the isShared field and canEdit field into one? What are your thoughts?
