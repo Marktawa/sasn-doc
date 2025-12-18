@@ -1,6 +1,16 @@
-Sharing > Share > Request Edit > Add Editor > File Upload > JavaScript (Reactivity) > Editor > Infinite Scroll (Load More)
+For JavaScript ditch reactivity, implement the rich text editor feature. This means that when a user has JavaScript enabled they can access the rich text editor
 
-Phase 4 `add-editor`. "Add Editor" button in the View Note page. `add-editor` route. `add-editor` method in the Notes controller which send an email to the user who has been added as an editor
+This article is primarily an update to an article about creating a Notes Sharing app using Strapi and Nuxt. The approach taken here is different with regards to the key features which include: sharing a link to a note, request edit access to a note, adding an editor to a note, image/file upload, adding an editor (plugin) js, implementing infinite loading or load more feature for the notes.
+
+Sharing > Share > Request Edit > Add Editor > File Upload > JavaScript (Reactivity) > Editor > Infinite Scroll (Load More) > Error Handling > Security > CSS > UI Clean Up
+
+Create a **scripts** directory to store all handy scripts you will use for the project. Scripts that have come to mind are: a script to extract the titles of all the sections in the **README** and list them in numbered order in the **CHAPTERS.md** file. 
+
+JavaScript(Reactivity). This should be handled methodically. First create a **CHAPTERS.md** file in the root of the docs project. This file will list out all the chapters of the article in order. This is done to help look at things from a top-down view. Create a **SECTIONS.md** file. This will group the chapters into sections or do it in the **CHAPTERS.md** file itself.
+
+File Upload. Add `attachment` field to Notes collection. The type should be url. In Nuxt UI, add "Add attachment" below the content for notes. Once the user clicks the "Add attachment" button they are taken to the "File Upload" page. Once file is uploaded, user clicks submit then a Nuxt server side route is triggered which will perform the file upload to Strapi server. After performing the file upload the url to the image is retrieved then the Note's url field is updated. The "View Note" page in the UI will show the link to the attachment
+
+Phase 4 `add-editor`. "Add Editor" button in the View Note page. `add-editor` route. `add-editor` method in the Notes controller which send an email to the user who has been added as an editor. Nuxt UI is updated. The "Add Editor" button will include an email form input. Above the email form input put a label like "Enter email of user who you want to add as editor"
 
 Phase 3 Routes are `share`, `add-editor`, `request-edit`. `request-edit` route. Add `request-edit` controller and `request-edit` route. User clicks "Request Edit" button in the Note View page. This sends the user to the "By clicking submit your request will be sent to the author" with a "Submit" button. This button triggers the `request-edit` Nuxt server route which makes a request to the `request-edit` endpoint. Once response is received, user is redirected to the "Success page". `request-edit` controller sends email to author of note quoting email of user requesting to edit.
 
