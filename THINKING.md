@@ -1,3 +1,17 @@
+Security. What needs to be secured. Only note owner can create, no other user can create a note on behalf of other user. Only note owner can delete, no other user can delete note besides owner.
+
+<!-- Eighth phase Share. `editor` field added to `Notes` collection. It's of type email. `enableEdit` controller updated so that it sets a given note's `canEdit` field to `true` and writes an email string in the `editor` field of the Notes collection. `update` method is overridden. Note owner can still edit note or user whose email matches the string in the `editor` field && `canEdit` field is `true`. Nuxt UI is updated. The "Enable Edit" button will include an email form input. Above the email form input put a label like "Enter email of user who you want to give Edit rights". -->
+
+Add Editor. `editor` field added to `Notes` collection. It is of type `email`. It receives the email address of the editor. One editor per note. Note owner can still edit note or user whose email matches the string in the `editor` field. `update` method in Notes controller is overridden.
+
+Security > Error Handling > CSS > UI Clean Up
+
+Infinite Scroll (Load More). Simple basic implementation. Load More button will allow users to load more notes on demand. In this case, the user must have maybe 10 notes. We will limit the initial render to 5 notes
+
+Create a folder named `partials` in the root of the `docs` folder. This will serve as a folder to store parts of the **README.md** as stipulated by **CHAPTERS.md** section. Name them **README1.md** and so on.
+
+Sharing > Share > Request Edit > Add Editor > File Upload > Rich Text Editor > Infinite Scroll (Load More) > Error Handling > Security > CSS > UI Clean Up
+
 For JavaScript ditch reactivity, implement the rich text editor feature. This means that when a user has JavaScript enabled they can access the rich text editor
 
 This article is primarily an update to an article about creating a Notes Sharing app using Strapi and Nuxt. The approach taken here is different with regards to the key features which include: sharing a link to a note, request edit access to a note, adding an editor to a note, image/file upload, adding an editor (plugin) js, implementing infinite loading or load more feature for the notes.
@@ -38,7 +52,7 @@ Tenth phase Email. `share` controller updated with `sendEmail` function that sen
 
 Ninth phase Email. Setup Configure Brevo. Add A Brevo Email Service. Brevo service will have a `sendEmail` function that sends an email to a user. Test Brevo. Create Test Email Route. Create Test Email Controller. Test Email Service. Delete test files.
 
-Eighth phase Share. `editor` field added to `Notes` collection. It's of type email. `enableEdit` controller updated so that it sets a given note's `canEdit` field to `true` and writes an email string in the `editor` field of the Notes collection. `update` method is overridden. Note owner can still edit note or user whose email matches the string in the `editor` field && `canEdit` field is `true`. Nuxt UI is updated. The "Enable Edit" button will include an email form input. Above the email form input put a label like "Enter email of user who you want to give Edit rights"
+Eighth phase Share. `editor` field added to `Notes` collection. It's of type email. `enableEdit` controller updated so that it sets a given note's `canEdit` field to `true` and writes an email string in the `editor` field of the Notes collection. `update` method is overridden. Note owner can still edit note or user whose email matches the string in the `editor` field && `canEdit` field is `true`. Nuxt UI is updated. The "Enable Edit" button will include an email form input. Above the email form input put a label like "Enter email of user who you want to give Edit rights".
 
 Seventh phase Share. `enable-edit` route is created. `enableEdit` controller created. `enableEdit` controller where only the owner of a note sets a shared note's `canEdit` field to `true`. `share` controller updated so that it sets a given note's `isShared` field to `true` and `canEdit` field to `false`. Nuxt UI change. The "Enable Edit" button should appear next to the "Unshare" button. Owner clicks "Enable Edit" and is taken to the "Are you sure you want this note to be editable?" page. Clicking "Yes" leads user to Confirmation page. Clicking "No" returns user to the Note view page.
 

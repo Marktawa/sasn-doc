@@ -1,9 +1,15 @@
 # SECTIONS
 
-1. (From *Title* to *Test Note Delete*)
-2. (From *User Authentication using ...* to *Test Logout Functionality*)
-3. (From *Add Sharing: Phase 1* to *Test Add Editor flow*)
-4. (From *File Upload* to *Test File Upload flow*)
+1. (From *Title* to *Test Note Delete*) - README1.md
+2. (From *User Authentication using ...* to *Test Logout Functionality*) - README2.md
+3. (From *Add Sharing: Phase 1* to *Test Add Editor flow*) - README3.md
+4. (From *File Upload* to *Test File Upload flow*) - README4.md
+5. Rich Text Editor
+6. Infinite Scroll
+7. Error Handling
+8. Security
+9. UI Clean up
+10. CSS
 
 
 # CHAPTERS
