@@ -1136,7 +1136,7 @@ You should get a `403` forbidden HTTP status code error. No list of notes appear
 ```json 
 ```
 
-<!-- End of Latest Video -->
+<!-- End of Video -->
 
 <!--
 Beginning of New Video
@@ -1144,17 +1144,21 @@ Beginning of New Video
 - Check `.secret`, github provider, 
 -->
 
-### Add User from User Permissions Plugin with One to Many relation field
+### Add User from User Permissions Plugin with "Many to One" relation field
 
 Make sure your Strapi server is running then log in your Strapi Admin Dashboard. Click **Content-Type Builder** and select the **Note** collection.
 
 Click **Edit** to add a new field to the **Note** collection.
 
-Add a `Relations` field whereby `User (from: user-permissions-user)`, then click on `Users have many notes`.
-<!-- Add Screenshot -->
+Add a `Relations` field whereby `User (from: user-permissions-user)`, then click on `Users have many notes` and name it `user`.
+![Notes collection relation field in Content Type Builder](https://res.cloudinary.com/craigsims808/image/upload/v1766202233/strapi/sasn/24-user-relation-field-in-notes-collection_fkce81.png)
 
-Update Notes collection entries. Both the User and Notes. 
-<!-- Add Screenshot -->
+These are the current fields in the Note collection: `title`, `content` , and user.
+![Current Notes collection in Content-Type Builder](https://res.cloudinary.com/craigsims808/image/upload/v1766202606/strapi/sasn/19-update-notes-collection-with-user-relation-field_kq98az.png)
+
+
+In the **Content Manager**, select one note and you will notice that the appearance of a user drop-down.
+![Updated Notes collection entry showing user, title, and content](https://res.cloudinary.com/craigsims808/image/upload/v1766204529/strapi/sasn/20-notes-entry-with-title-content-user_yucysu.png)
 
 For the demo to work, some notes will be assigned to one user in the Content Manager and the other notes assigned to the other user in the Content Manager.
 
@@ -1193,7 +1197,7 @@ Get the response JSON:
 ```
 
 Check to see if user has been added to the User collection in the Content Manager.
-<!-- Add Screenshot -->
+![Two users in User collection](https://res.cloudinary.com/craigsims808/image/upload/v1766200546/strapi/sasn/22-two-users-in-user-collection-list_foxs51.png)
 
 Add JWT code to `.secret`:
 ```
@@ -1213,6 +1217,8 @@ curl -X GET "http://localhost:1337/api/notes" \
   -H "Authorization: Bearer $GITHUB_JWT_TOKEN_2"
 ```
 
+You should get the list of all notes as the response.
+
 <!-- 
 At least two users. Each user has their own notes 
 markmunyaka@gmail.com
@@ -1224,13 +1230,17 @@ USER added off screen
 ### Add notes for newly added user
 
 Visit the Content Manager in your Strapi Dashboard. Assign some notes to the newly created user you just added.
-<!-- Add Screenshot -->
+![User collection view for new user with notes assigned to user](https://res.cloudinary.com/craigsims808/image/upload/v1766200938/strapi/sasn/21-user-entry-with-assigned-notes_mrvrpk.png)
+
+The objective is to have some notes for each user as seen in the Note collection entries' view.
+![Note collection entries with notes for both users](https://res.cloudinary.com/craigsims808/image/upload/v1766201159/strapi/sasn/23-notes-collection-entries-with-both-users-assigned-notes-each_r2x98g.png)
 
 ### Test `find`for Authenticated Users
 
 If we tested the `find` method right now using one of the authenticated users, we will discover that the response will include all notes in the database. Even the ones that don't belong to the authenticated user. That is undesirable.
 
 Perform a `find` request as an Authenticated User:
+<!-- TODO: Consider redoing the request with the user field populated. Check Strapi docs. You may have to comment out the `find` method override -->
 ```shell
 curl -X GET "http://localhost:1337/api/notes" \
   -H "Authorization: Bearer $GITHUB_JWT_TOKEN"
@@ -1271,6 +1281,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
 ### Test `find` for Authenticated User
 
 Perform a `find` request as an Authenticated User:
+<!-- TODO: Consider redoing the request with the user field populated. Check Strapi docs -->
 ```shell
 curl -X GET "http://localhost:1337/api/notes" \
   -H "Authorization: Bearer $GITHUB_JWT_TOKEN"
@@ -1311,7 +1322,6 @@ curl -X GET "http://localhost:1337/api/notes" \
     }
 ]
 ```
-<!-- Add Response -->
 
 The response should now include only the owner's notes.
 
