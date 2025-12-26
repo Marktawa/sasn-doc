@@ -1,3 +1,159 @@
+if response for `console.log(notes)` is
+
+```js
+[ 
+   { 
+    id: 1,
+    documentId: 'ia21j5a0o6muvwf0nvegce7d',
+    title: '1 First Note',
+    content: 'This is content for the first note. It has been updated once.',
+    createdAt: '2025-12-02T14:14:11.679Z',
+    updatedAt: '2025-12-17T10:47:32.857Z',
+    publishedAt: '2025-12-17T10:47:32.847Z',
+    locale: null 
+  },
+  { 
+    id: 3,
+    documentId: 'n32nsdoh01d6hqoq711qbpt1',
+    title: '3 Third Note',
+    content: 'This is the content for the third note.',
+    createdAt: '2025-12-02T14:15:11.889Z',
+    updatedAt: '2025-12-17T10:47:56.380Z',
+    publishedAt: '2025-12-17T10:47:56.372Z',
+    locale: null 
+  },
+  { 
+    id: 5,
+    documentId: 'fl1d8z0xjso9qh0os36gceqq',
+    title: '5 Fifth Note',
+    content: 'This is the content for the fifth note.',
+    createdAt: '2025-12-02T14:16:01.793Z',
+    updatedAt: '2025-12-17T10:11:29.569Z',
+    publishedAt: '2025-12-17T10:11:29.557Z',
+    locale: null 
+  } 
+]
+```
+
+## PROMPT
+
+I have the file `pages/notes/index.vue` with the following contents:
+
+```vue
+<script setup>
+    const { data: notes } = await useFetch('http://localhost:1337/api/notes')
+</script>
+
+<template>
+    <h1>Notes App</h1>
+    <h2>Notes List</h2>
+    <ul>
+        <li v-for="note in notes.data">
+            <h3>{{ note.title }}</h3>
+            <NuxtLink :to="`/notes/${note.documentId}`">
+                <button>View Note</button>
+            </NuxtLink>
+        </li>
+    </ul>
+
+    <NuxtLink to="/notes/create">
+        <button>Create a New Note</button>
+    </NuxtLink>
+    <br />
+    <br />
+    <NuxtLink to="/">Back to Home</NuxtLink> 
+</template>
+```
+
+I ran the code and I am now getting this error:
+
+```shell
+ ERROR  [request error] [unhandled] [GET] http://localhost:3000/notes
+
+ 
+ℹ Error: Cannot read properties of undefined (reading 'data')
+
+ ⁃ at _sfc_ssrRender (pages/notes/index.vue:29:56)
+
+   13 ┃              </NuxtLink>
+   14 ┃          </li>
+   15 ┃      </ul>
+   16 ┃  
+   17 ┃      <NuxtLink to="/notes/create">
+   18 ┃          <button>Create a New Note</button>
+   19 ┃      </NuxtLink>
+   20 ┃      <br />
+   21 ┃      <br />
+   22 ┃      <NuxtLink to="/">Back to Home</NuxtLink> 
+   23 ┃  </template>
+
+ ⁃ at renderComponentSubTree (node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:737:9)
+ ⁃ (node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:684:25)
+ ⁃ at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+ ⁃ at async renderToString (node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:969:18)
+ ⁃ at async Object.renderToString$1 [as renderToString] (node_modules/@nuxt/nitro-server/dist/runtime/utils/renderer/build-files.js:26:17)
+ ⁃ at async Object.renderToString (node_modules/vue-bundle-renderer/dist/runtime.mjs:288:20)
+ ⁃ at async Object.render (node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer.js:86:20)
+ ⁃ at async Object.handler (node_modules/nitropack/dist/runtime/internal/renderer.mjs:25:21)
+ ⁃ (async file://node_modules/h3/dist/index.mjs:2004:19)
+
+[CAUSE]
+TypeError {
+  stack: "Cannot read properties of undefined (reading 'data')\n" +
+  'at _sfc_ssrRender (./pages/notes/index.vue:29:56)\n' +
+  'at renderComponentSubTree (./node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:737:9)\n' +
+  'at ./node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:684:25)\n' +
+  '    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n' +
+  'at async renderToString (./node_modules/@vue/server-renderer/dist/server-renderer.cjs.js:969:18)\n' +
+  'at async Object.renderToString$1 [as renderToString] (./node_modules/@nuxt/nitro-server/dist/runtime/utils/renderer/build-files.js:26:17)\n' +
+  'at async Object.renderToString (./node_modules/vue-bundle-renderer/dist/runtime.mjs:288:20)\n' +
+  'at async Object.render (./n'... 303 more characters,
+  message: "Cannot read properties of undefined (reading 'data')",
+}
+[8:36:35 AM]  ERROR  [request error] [unhandled] [GET] http://localhost:3000/notes
+```
+
+## PROMPT
+
+I have a file `server/api/auth/callback.get.js` with the following contents:
+
+```js
+export default defineEventHandler(async (event) => {
+  // Get the access_token from the query parameters sent by Strapi
+  const query = getQuery(event)
+  const accessToken = query.access_token
+
+  // Exchange the access_token for the Strapi JWT and user profile
+  const strapiResponse = await $fetch(
+    `http://localhost:1337/api/auth/github/callback?access_token=${accessToken}`
+  )
+
+  // strapiResponse contains { jwt, user }
+  const { jwt, user } = strapiResponse
+
+  // Set the Strapi JWT as an HTTP-only cookie
+  setCookie(event, 'auth_token', jwt, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/'
+  })
+
+  // Redirect to the notes page
+  return sendRedirect(event, '/notes')
+})
+```
+
+I got the following error when I ran the Nuxt frontend app.
+
+```shell
+[Vue Router warn]: No match found for location with path "/auth/callback?access_token=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&raw%5Baccess_token%5D=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&raw%5Bscope%5D=user&raw%5Btoken_type%5D=bearer"
+[8:21:45 AM]  WARN  [Vue Router warn]: No match found for location with path "/auth/callback"
+```
+
+What could be the cause?
+
 ## CHATGPT
 
 ### Adding “Load More” feature for Notes List

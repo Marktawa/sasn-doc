@@ -1362,6 +1362,9 @@ What this does:
 Run your development servers and visit `http://localhost:3000`. Click "Login with GitHub" and verify you're redirected to GitHub's authorization page.
 <!-- Add Screenshot -->
 
+You will then get an HTTP `404` 'Not Found' error code as the redirect page: "http://localhost:3000/auth/callback" does not exist.
+<!-- Add Screenshot -->
+
 ### Handle OAuth Callback and Store JWT (Server-Side)
 
 After the user authorizes your app on GitHub, Strapi redirects them back to your application with an `access_token`. We need to exchange this token for a Strapi JWT and user profile, then store the JWT in a secure HTTP-only cookie.
@@ -1379,14 +1382,14 @@ This tells Strapi where to send the user after successful GitHub authentication.
 
 #### Create Server-Side Auth Callback Handler
 
-Create a new folder named `auth` inside the `server/api` folder:
+Create a new folder named `routes/auth` inside the `server` folder:
 ```shell
-mkdir -p server/api/auth
+mkdir -p server/routes/auth
 ```
 
 Create a file named `callback.get.js` inside the `server/api/auth` directory:
 ```shell
-touch server/api/auth/callback.get.js
+touch server/routes/auth/callback.get.js
 ```
 
 Add the following code to `server/api/auth/callback.get.js`:
@@ -1426,7 +1429,7 @@ Let's break down the entire authentication flow:
 2. Frontend redirects to Strapi: `http://localhost:1337/api/connect/github`
 3. Strapi redirects to GitHub login page where the user authorizes the app
 4. GitHub redirects back to Strapi: `http://localhost:1337/api/connect/github/callback?code=abcdef`
-5. Strapi exchanges the code for an access_token with GitHub
+5. Strapi exchanges the code for an `access_token` with GitHub
 6. Strapi redirects to your Nuxt callback: `http://localhost:3000/auth/callback?access_token=xyz123`
 7. Nuxt server handler receives the request and extracts the `access_token`
 8. Nuxt server calls Strapi again: `http://localhost:1337/api/auth/github/callback?access_token=xyz123`
@@ -1441,7 +1444,7 @@ Let's break down the entire authentication flow:
 2. Visit `http://localhost:3000`
 3. Click "Login with GitHub"
 4. Authorize the application on GitHub
-5. You should be redirected directly to `/notes`
+5. You should be redirected directly to `/notes`. No notes will appear, instead you will get a Server Error.
 <!-- Add Screenshot -->
 
 To verify the JWT was stored:
@@ -1499,7 +1502,7 @@ Update `pages/notes/index.vue` to use the new server route:
   
   <!-- List of existing notes -->
   <ul>
-    <li v-for="note in notes.data" :key="note.id">
+    <li v-for="note in notes" :key="note.id">
       <h3>{{ note.title }}</h3>
       <NuxtLink :to="`/notes/${note.documentId}`">
         <button>View Note</button>
